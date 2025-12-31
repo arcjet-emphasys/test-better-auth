@@ -17,7 +17,7 @@ const signInSchema = z.object({
 })
 
 type SignInForm = z.infer<typeof signInSchema>;
-const SignInTab = () => {
+export const SignInTab = () => {
 
     const router = useRouter();
     const form = useForm<SignInForm>(
