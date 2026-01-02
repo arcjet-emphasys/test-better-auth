@@ -9,6 +9,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import z from "zod";
 import {authClient} from "@/lib/auth-client";
 import {toast} from "sonner";
+import {PasswordInput} from "@/components/ui/password-input";
 
 
 const signInSchema = z.object({
@@ -17,7 +18,11 @@ const signInSchema = z.object({
 })
 
 type SignInForm = z.infer<typeof signInSchema>;
-export const SignInTab = () => {
+export const SignInTab = ({
+                              openEmailVerificationTabAction,
+                          }: {
+    openEmailVerificationTabAction: (email: string, initialSeconds?: number) => void
+}) => {
 
     const router = useRouter();
     const form = useForm<SignInForm>(
@@ -33,6 +38,10 @@ export const SignInTab = () => {
     const handleSignIn = async (data: SignInForm) => {
         const res = await authClient.signIn.email({...data, callbackURL: "/"}, {
             onError : async (error) => {
+                if (error.error.code === "EMAIL_NOT_VERIFIED") {
+                    openEmailVerificationTabAction(data.email, 0);
+                    toast.error("Email not verified")
+                }
                 toast.error(error.error ? error.error.message ? error.error.message :error.error.statusText: `Something went wrong...`)
                 //toast.error(`Something went wrong...`)
             },
@@ -58,7 +67,7 @@ export const SignInTab = () => {
                 <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                        <Input type="password" {...field}/>
+                        <PasswordInput {...field} />
                     </FormControl>
                     <FormMessage/>
                 </FormItem>

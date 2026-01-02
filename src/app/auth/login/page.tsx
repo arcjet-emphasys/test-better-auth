@@ -15,12 +15,14 @@ import { SocialAuthButtons } from "./_components/social-auth-buttons"
 import { useEffect, useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
+import EmailVerification from "@/components/auth/email-verification";
 
 type Tab = "signin" | "signup" | "email-verification" | "forgot-password"
 
 export default function LoginPage() {
     const router = useRouter()
     const [email, setEmail] = useState("")
+    const [initialTime, setInitialTime] = useState(30)
     const [selectedTab, setSelectedTab] = useState<Tab>("signin")
 
     useEffect(() => {
@@ -29,9 +31,10 @@ export default function LoginPage() {
         })
     }, [router])
 
-    function openEmailVerificationTab(email: string) {
-        setEmail(email)
-        setSelectedTab("email-verification")
+    function openEmailVerificationTab(email: string, initialSeconds = 30) {
+        setEmail(email);
+        setSelectedTab("email-verification");
+        setInitialTime(initialSeconds);
     }
 
     return (
@@ -52,11 +55,9 @@ export default function LoginPage() {
                         <CardTitle>Sign In</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <SignInTab />
+                        <SignInTab openEmailVerificationTabAction={openEmailVerificationTab} />
                     </CardContent>
-
                     <Separator />
-
                     <CardFooter className="grid grid-cols-2 gap-3">
                         <SocialAuthButtons />
                     </CardFooter>
@@ -69,14 +70,22 @@ export default function LoginPage() {
                         <CardTitle>Sign Up</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <SignUpTab />
+                        <SignUpTab openEmailVerificationTabAction={openEmailVerificationTab}/>
                     </CardContent>
-
                     <Separator />
-
                     <CardFooter className="grid grid-cols-2 gap-3">
                         <SocialAuthButtons />
                     </CardFooter>
+                </Card>
+            </TabsContent>
+            <TabsContent value="email-verification">
+                <Card>
+                    <CardHeader className="text-2xl font-bold">
+                        <CardTitle>Verify Your Email</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <EmailVerification email={email} initialTime={initialTime}/>
+                    </CardContent>
                 </Card>
             </TabsContent>
 
