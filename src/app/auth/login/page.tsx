@@ -15,7 +15,8 @@ import { SocialAuthButtons } from "./_components/social-auth-buttons"
 import { useEffect, useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
-import EmailVerification from "@/components/auth/email-verification";
+import EmailVerification from "@/app/auth/login/_components/email-verification";
+import ForgotPassword from "@/app/auth/login/_components/forgot-password";
 
 type Tab = "signin" | "signup" | "email-verification" | "forgot-password"
 
@@ -55,7 +56,7 @@ export default function LoginPage() {
                         <CardTitle>Sign In</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <SignInTab openEmailVerificationTabAction={openEmailVerificationTab} />
+                        <SignInTab openEmailVerificationTabAction={openEmailVerificationTab} openForgotPasswordTabAction={() => setSelectedTab("forgot-password")}/>
                     </CardContent>
                     <Separator />
                     <CardFooter className="grid grid-cols-2 gap-3">
@@ -85,6 +86,16 @@ export default function LoginPage() {
                     </CardHeader>
                     <CardContent>
                         <EmailVerification email={email} initialTime={initialTime}/>
+                    </CardContent>
+                </Card>
+            </TabsContent>
+            <TabsContent value="forgot-password">
+                <Card>
+                    <CardHeader className="text-2xl font-bold">
+                        <CardTitle>Forgot Password</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ForgotPassword openForgotPasswordTabAction={() => setSelectedTab("signin")}/>
                     </CardContent>
                 </Card>
             </TabsContent>

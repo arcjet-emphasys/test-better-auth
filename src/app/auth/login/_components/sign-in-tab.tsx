@@ -20,8 +20,10 @@ const signInSchema = z.object({
 type SignInForm = z.infer<typeof signInSchema>;
 export const SignInTab = ({
                               openEmailVerificationTabAction,
+                              openForgotPasswordTabAction,
                           }: {
     openEmailVerificationTabAction: (email: string, initialSeconds?: number) => void
+    openForgotPasswordTabAction: () => void
 }) => {
 
     const router = useRouter();
@@ -52,6 +54,8 @@ export const SignInTab = ({
     }
 
     const {isSubmitting} = form.formState;
+
+
     return <Form {...form}>
         <form className="space-y-4" onSubmit={form.handleSubmit(handleSignIn)}>
             <FormField name="email" control={form.control} render={({field}) => (
@@ -65,7 +69,10 @@ export const SignInTab = ({
             )}/>
             <FormField name="password" control={form.control} render={({field}) => (
                 <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <div className="flex justify-between items-center">
+                    <FormLabel>Password</FormLabel>
+                        <Button onClick={openForgotPasswordTabAction} type="button" variant="link" size="sm" className="text-sm text-muted-foreground underline">Forgot password?</Button>
+                    </div>
                     <FormControl>
                         <PasswordInput {...field} />
                     </FormControl>
